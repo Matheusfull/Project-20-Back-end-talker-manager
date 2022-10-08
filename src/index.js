@@ -27,7 +27,7 @@ app.get('/talker', async (req, res) => {
   return res.status(200).json(talkers); */
 });
 
-/* app.get('/talker/:id', async (req, res) => {
+app.get('/talker/:id', async (req, res) => {
   const data = await fs.readFile('src/talker.json', 'utf-8');
   const talkersJson = JSON.parse(data);
   const { id } = req.params;
@@ -37,7 +37,7 @@ app.get('/talker', async (req, res) => {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(200).json(talkerPerson);
-}); */
+});
 
 app.listen(PORT, () => {
   console.log('Online');
@@ -49,5 +49,17 @@ Requisito 1
 - Leremos os dados no arquivo talker.json
 - Converteremos para json
 - Responderemos com um status ok (200) com o mesmo json lido anteriormente
+*/
 
+/*
+Requisito 2
+- Usaremos o método get vindo do arquivo app com a rota /talker/:id e em seguido o middleware assíncrono.
+- Precisaremos de alguns dados para trabalhar, tais como: 1- o arquivo lido e convertido, 2- e o id que vem lá na URL, como um parâmetro de rota. Com isso podemo procurar dentres os objetos que estão no arquivo lido, aquele que tem o mesmo id passado na URL.
+    - 1 - Para termos o arquivo lido, vamos fazer o mesmo processo anterior:
+    - Ler o arquivo com o fs.readFile
+    - Converte-o para objeto.
+    - 2 - Pegaremos o id da url pela desestruturação: { id } = req.params;
+- Já temos o array de objetos e o id, agora só encontrar o objeto que tenha o mesmo id passado na url. Usaremos o find
+- Se nenhum objeto for encontrado, responderemos com um status not found
+- Se for encontrado, responderemos com um status ok e o mandaremos.
 */
