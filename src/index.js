@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const crypto = require('crypto');
-/* const emailValidate = require('./middleware/emailValidate');
-const authValidate = require('./middleware/authValidate');
+const emailValidate = require('./middleware/emailValidate');
+/* const authValidate = require('./middleware/authValidate');
 const nameValidate = require('./middleware/nameValidate');
 const ageValidate = require('./middleware/ageValidate');
 const talkValidate = require('./middleware/talkValidate');
@@ -52,7 +52,7 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(200).json(talkerPerson);
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', emailValidate, (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ token: 'Os campos precisam ser preenchidos!' });
@@ -104,4 +104,9 @@ Requisito 2
 /*
 Requisito 3 
 1 - Vamos verificar se há email e senha no corpo da requsição, se não tiver, avisaremos, caso contrário, mandaremos uma mensagem com um token uriundo da função generateToken.
+*/
+
+/*
+Requisito 4
+1 - Neste arquivo a única coisa que vamos fazer é passar o middleware
 */
