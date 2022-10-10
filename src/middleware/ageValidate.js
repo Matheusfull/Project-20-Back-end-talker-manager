@@ -1,4 +1,4 @@
-/* // middlewares/auth.js
+// middlewares/auth.js
 module.exports = (req, res, next) => {
     const { age } = req.body;
   
@@ -9,4 +9,9 @@ module.exports = (req, res, next) => {
         return res.status(400).json({ message: 'A pessoa palestrante deve ser maior de idade' });
       }
       next();
-  }; */
+  };
+
+  /*
+  Requisito 5 
+  Caso normal de validação da chave idade para verificar se ela axiste, não é valia e maior que 18
+  */

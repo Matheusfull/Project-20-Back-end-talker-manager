@@ -1,4 +1,4 @@
-/* // middlewares/auth.js
+// middlewares/auth.js
 module.exports = (req, res, next) => {
     const { authorization } = req.headers;
   
@@ -9,4 +9,9 @@ module.exports = (req, res, next) => {
         return res.status(401).json({ message: 'Token inválido' });
       }
       next();
-  }; */
+  };
+
+  /*
+  Requisito 5-
+  Varificação para ver se a authorization que vem no headers da requisição existe e tem o tamanha pardão, de 16 caracteres
+  */

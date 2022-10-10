@@ -3,12 +3,12 @@ const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const crypto = require('crypto');
 const emailValidate = require('./middleware/emailValidate');
-/* const authValidate = require('./middleware/authValidate');
+const authValidate = require('./middleware/authValidate');
 const nameValidate = require('./middleware/nameValidate');
 const ageValidate = require('./middleware/ageValidate');
 const talkValidate = require('./middleware/talkValidate');
 const watchedAtValidate = require('./middleware/watchedAtValidate');
-const rateValidate = require('./middleware/rateValidate'); */
+const rateValidate = require('./middleware/rateValidate');
 // const path = require('path');
 // const talkers = require('./talker.json');
 
@@ -60,7 +60,7 @@ app.post('/login', emailValidate, (req, res) => {
   res.status(200).json({ token: generateToken() });
 });
 
-/* app.post('/talker', authValidate, nameValidate, ageValidate,
+app.post('/talker', authValidate, nameValidate, ageValidate,
  talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
   const newTalker = req.body;
   const data = await fs.readFile('src/talker.json', 'utf-8');
@@ -74,7 +74,7 @@ app.post('/login', emailValidate, (req, res) => {
   const newTalkerJson = JSON.stringify(newTalkerArray);
   fs.writeFile('src/talker.json', newTalkerJson);
   res.status(201).json(newTalker);
- }); */
+ });
 
 app.listen(PORT, () => {
   console.log('Online');
@@ -109,4 +109,16 @@ Requisito 3
 /*
 Requisito 4
 1 - Neste arquivo a única coisa que vamos fazer é passar o middleware
+*/
+
+/*
+Requsito 5
+Vamos cadastrar um talker através do método post e rota /talker
+1 - Primeiro fazeremos as 6 validações.
+2 - Pegaremos as informações no corpo da requisição ( e vamos adicionar no array que temos)
+3 - Pego o arquivo para ler assincronamente, converto para objeto.
+4 - Crio um id dinâmico para evitar erros
+5 - Incluo esse abjeto da requisição na minha lista de objetos (tentei dar um push, mas não foi)
+6 - Passa tudo para json e escreve tudão no arquivo.
+7 - Depois disso tudo, vamos avisar ao cliente que deu bom kkk depois de tanto trabalho, há de dar bom
 */

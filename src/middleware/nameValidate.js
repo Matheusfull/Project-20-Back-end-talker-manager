@@ -1,4 +1,4 @@
-/* // middlewares/auth.js
+// middlewares/auth.js
 module.exports = (req, res, next) => {
     const { name } = req.body;
   
@@ -9,4 +9,9 @@ module.exports = (req, res, next) => {
         return res.status(400).json({ message: 'O "name" deve ter pelo menos 3 caracteres' });
       }
       next();
-  }; */
+  };
+
+  /*
+  Requisito 5
+  Verificação se o nome existe, não é nulo e se é maior que 3 caracteres
+  */
