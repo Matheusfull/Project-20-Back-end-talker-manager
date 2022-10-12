@@ -91,7 +91,7 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
   res.status(200).json(talkerUpDate);
  });
 
-/*  app.delete('/talker/:id', authValidate, async (req, res) => {
+ app.delete('/talker/:id', authValidate, async (req, res) => {
   const { id } = req.params;
   const data = await fs.readFile('src/talker.json', 'utf-8');
   const talkersJson = JSON.parse(data);
@@ -100,7 +100,7 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
   const newTalkerJson = JSON.stringify(newTalkerArray);
   fs.writeFile('src/talker.json', newTalkerJson);
   res.status(204).json();
- }); */
+ });
 
 app.listen(PORT, () => {
   console.log('Online');
