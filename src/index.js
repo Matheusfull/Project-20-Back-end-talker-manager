@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
@@ -76,6 +77,31 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
   res.status(201).json(newTalker);
  });
 
+ app.put('/talker/:id', authValidate, nameValidate, ageValidate,
+ talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
+  const { id } = req.params;
+  const talkerUpDate = req.body;
+  const data = await fs.readFile('src/talker.json', 'utf-8');
+  const talkersJson = JSON.parse(data);
+  const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
+  talkerUpDate.id = Number(id);
+  const newTalkerArray = [...talkeresFound, talkerUpDate];
+  const newTalkerJson = JSON.stringify(newTalkerArray);
+  fs.writeFile('src/talker.json', newTalkerJson);
+  res.status(200).json(talkerUpDate);
+ });
+
+/*  app.delete('/talker/:id', authValidate, async (req, res) => {
+  const { id } = req.params;
+  const data = await fs.readFile('src/talker.json', 'utf-8');
+  const talkersJson = JSON.parse(data);
+  const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
+  const newTalkerArray = [...talkeresFound];
+  const newTalkerJson = JSON.stringify(newTalkerArray);
+  fs.writeFile('src/talker.json', newTalkerJson);
+  res.status(204).json();
+ }); */
+
 app.listen(PORT, () => {
   console.log('Online');
 });
@@ -121,4 +147,25 @@ Vamos cadastrar um talker através do método post e rota /talker
 5 - Incluo esse abjeto da requisição na minha lista de objetos (tentei dar um push, mas não foi)
 6 - Passa tudo para json e escreve tudão no arquivo.
 7 - Depois disso tudo, vamos avisar ao cliente que deu bom kkk depois de tanto trabalho, há de dar bom
+*/
+
+/*
+Requisito 6
+- Faz todas as validações que já foram vistas no requisito 5
+- Vamos pegar o id pelo parâmetro e as novas informações no corpo da requisição
+- Ler e converter o arquivo para um array de objetos
+- Vamos fazer um filtro, onde retiraremos o objeto que te o mesmo id passado no parâmetro
+- Colocaremos o mesmo id, preservando
+- Vamos adicionar o objeto passado no corpo da requsição com os outros que foram filtrados
+- Depois é só desconverter o arquivo
+- Por fim vamos escrever isso tudo no arquivo json e responder que deu certo.
+*/
+
+/*
+Requisito 7
+O raciocínio é o mesmo do requisito anterior
+- Pega o arquivo, le, converte e pega o id passado no parâmetro
+- Faz um filtro retirando o objeto que tem o mesmo id passado no parâmetro de rota
+- Pega esse filtro, converte para json e escreve no arquivo
+- Avisa que deu bom e o objeto foi deletado.
 */
