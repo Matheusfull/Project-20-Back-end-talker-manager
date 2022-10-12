@@ -10,8 +10,6 @@ const ageValidate = require('./middleware/ageValidate');
 const talkValidate = require('./middleware/talkValidate');
 const watchedAtValidate = require('./middleware/watchedAtValidate');
 const rateValidate = require('./middleware/rateValidate');
-// const path = require('path');
-// const talkers = require('./talker.json');
 
 function generateToken() {
   return crypto.randomBytes(8).toString('hex');
@@ -29,11 +27,12 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-const leitor = fs.readFile('src/talker.json', 'utf-8');
+const talkerJsonPath = 'src/talker.json';
+// const leitor = fs.readFile(talkerJsonPath, 'utf-8');
 
 app.get('/talker', async (req, res) => {
   // const dataPath = path.resolve(__dirname, 'talker.json');
-  const data = await fs.readFile('src/talker.json', 'utf-8');
+  const data = await fs.readFile(talkerJsonPath, 'utf-8');
   const talkersJson = JSON.parse(data);
   res.status(200).json(talkersJson);
   console.log('tudo certo no primeiro endpoint');
@@ -44,7 +43,7 @@ app.get('/talker', async (req, res) => {
 });
 
 app.get('/talker/:id', async (req, res) => {
-  const dataget = await leitor;
+  const dataget = await fs.readFile(talkerJsonPath, 'utf-8');
   const talkersJson = JSON.parse(dataget);
   const { id } = req.params;
   const talkerPerson = talkersJson.find((talker) => talker.id === Number(id));
@@ -66,7 +65,7 @@ app.post('/login', emailValidate, (req, res) => {
 app.post('/talker', authValidate, nameValidate, ageValidate,
  talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
   const newTalker = req.body;
-  const datapost = await leitor;
+  const datapost = await fs.readFile(talkerJsonPath, 'utf-8');
   const talkersJson = JSON.parse(datapost);
   const newId = talkersJson.length + 1;
   // const newTalkerArray = { id: newId, ...newTalker };
@@ -83,7 +82,7 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
  talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
   const { id } = req.params;
   const talkerUpDate = req.body;
-  const dataput = await leitor;
+  const dataput = await fs.readFile(talkerJsonPath, 'utf-8');
   const talkersJson = JSON.parse(dataput);
   const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
   talkerUpDate.id = Number(id);
@@ -95,11 +94,11 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
 
  app.delete('/talker/:id', authValidate, async (req, res) => {
   const { id } = req.params;
-  const datadelete = await leitor;
+  const datadelete = await fs.readFile(talkerJsonPath, 'utf-8');
   const talkersJson = JSON.parse(datadelete);
   const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
-  const newTalkerArray = [...talkeresFound];
-  const newTalkerJson = JSON.stringify(newTalkerArray);
+  // const newTalkerArray = [...talkeresFound];
+  const newTalkerJson = JSON.stringify(talkeresFound);
   fs.writeFile('src/talker.json', newTalkerJson);
   res.status(204).json();
  });
