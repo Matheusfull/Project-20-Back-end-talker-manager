@@ -2,7 +2,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
-const path = require('path');
 const crypto = require('crypto');
 const emailValidate = require('./middleware/emailValidate');
 const authValidate = require('./middleware/authValidate');
@@ -34,14 +33,14 @@ const leitor = fs.readFile('src/talker.json', 'utf-8');
 
 app.get('/talker', async (req, res) => {
   // const dataPath = path.resolve(__dirname, 'talker.json');
-  const talkerPath = path.resolve(__dirname, 'talker.json');
-  const data = await fs.readFile(talkerPath, 'utf-8');
+  const data = await fs.readFile('src/talker.json', 'utf-8');
   const talkersJson = JSON.parse(data);
-  if (!talkersJson) {
-    res.status(200).send([]);
-  }
   res.status(200).json(talkersJson);
   console.log('tudo certo no primeiro endpoint');
+  /* if (!talkers) {
+    return res.status(200).send([]);
+  }
+  return res.status(200).json(talkers); */
 });
 
 app.get('/talker/:id', async (req, res) => {
