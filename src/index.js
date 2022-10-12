@@ -29,9 +29,11 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+const leitor = fs.readFile('src/talker.json', 'utf-8');
+
 app.get('/talker', async (req, res) => {
   // const dataPath = path.resolve(__dirname, 'talker.json');
-  const data = await fs.readFile('src/talker.json', 'utf-8');
+  const data = await leitor;
   const talkersJson = JSON.parse(data);
   res.status(200).json(talkersJson);
   console.log('tudo certo no primeiro endpoint');
@@ -42,7 +44,7 @@ app.get('/talker', async (req, res) => {
 });
 
 app.get('/talker/:id', async (req, res) => {
-  const dataget = await fs.readFile('src/talker.json', 'utf-8');
+  const dataget = await leitor;
   const talkersJson = JSON.parse(dataget);
   const { id } = req.params;
   const talkerPerson = talkersJson.find((talker) => talker.id === Number(id));
@@ -64,7 +66,7 @@ app.post('/login', emailValidate, (req, res) => {
 app.post('/talker', authValidate, nameValidate, ageValidate,
  talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
   const newTalker = req.body;
-  const datapost = await fs.readFile('src/talker.json', 'utf-8');
+  const datapost = await leitor;
   const talkersJson = JSON.parse(datapost);
   const newId = talkersJson.length + 1;
   // const newTalkerArray = { id: newId, ...newTalker };
@@ -81,7 +83,7 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
  talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
   const { id } = req.params;
   const talkerUpDate = req.body;
-  const dataput = await fs.readFile('src/talker.json', 'utf-8');
+  const dataput = await leitor;
   const talkersJson = JSON.parse(dataput);
   const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
   talkerUpDate.id = Number(id);
@@ -93,7 +95,7 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
 
  app.delete('/talker/:id', authValidate, async (req, res) => {
   const { id } = req.params;
-  const datadelete = await fs.readFile('src/talker.json', 'utf-8');
+  const datadelete = await leitor;
   const talkersJson = JSON.parse(datadelete);
   const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
   const newTalkerArray = [...talkeresFound];
