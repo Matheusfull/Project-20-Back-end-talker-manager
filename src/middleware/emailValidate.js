@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
 Requisito 4
 Fazermos 4 condições para validar os dados do corpo da requisição na rota /login
 1 - Usaremos o caso de inexistência para o email
-2 - Usaremos um regex para validação de email. Ao longo do curso foi visto ess regex na parte de formulários no react.
+2 - Usaremos um regex para validação de email. Ao longo do curso foi visto ess regex na parte de formulários no react. Se o email não for válido, ele dará false e com isso vai entrar o if, pois lá está com o contrário (!) e com isso será true e vai retornar que o email não está no formato.
 3 - Usaremos o caso de inexistência para a senha 
 4 - Verificaremos se a senha contém no mínimo 6 caracteres.
 */

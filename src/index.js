@@ -30,69 +30,97 @@ app.get('/', (_request, response) => {
 const talkerJsonPath = 'src/talker.json';
 // const leitor = fs.readFile(talkerJsonPath, 'utf-8');
 
-app.get('/talker', async (req, res) => {
+app.get('/talker/search', authValidate, async (req, res) => {
+  const searchTerm = req.query.q;
+  const dataSearch = await fs.readFile(talkerJsonPath, 'utf-8');
+  const talkersJson = JSON.parse(dataSearch);
+  if (!searchTerm || searchTerm === '') {
+    return res.status(200).json(talkersJson);
+  }
+  const talker = talkersJson.filter((el) => el.name.includes(searchTerm));
+  if (!talker) return res.status(200).json([]);
+  return res.status(200).json(talker);
+});
+
+app.get('/talker', async (_req, res) => {
   // const dataPath = path.resolve(__dirname, 'talker.json');
-  const data = await fs.readFile(talkerJsonPath, 'utf-8');
+  /* const data = await fs.readFile(talkerJsonPath, 'utf-8');
   const talkersJson = JSON.parse(data);
-  res.status(200).json(talkersJson);
-  console.log('tudo certo no primeiro endpoint');
+  res.status(200).json(talkersJson); */
   /* if (!talkers) {
     return res.status(200).send([]);
   }
   return res.status(200).json(talkers); */
+  try {
+    const data = await fs.readFile(talkerJsonPath, 'utf-8');
+    const talkersJson = JSON.parse(data);
+    return res.status(200).json(talkersJson);
+    // console.log(data);
+    // console.log(data);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 });
 
 app.get('/talker/:id', async (req, res) => {
-  const dataget = await fs.readFile(talkerJsonPath, 'utf-8');
-  const talkersJson = JSON.parse(dataget);
-  const { id } = req.params;
-  const talkerPerson = talkersJson.find((talker) => talker.id === Number(id));
-  console.log(talkerPerson);
-  if (talkerPerson === undefined) {
-    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  try {
+    const dataget = await fs.readFile(talkerJsonPath, 'utf-8');
+    const talkersJson = JSON.parse(dataget);
+    const { id } = req.params;
+    const talkerPerson = talkersJson.find((talker) => talker.id === Number(id));
+    // console.log(talkerPerson);
+    if (talkerPerson === undefined) {
+      return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    }
+    return res.status(200).json(talkerPerson);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-  return res.status(200).json(talkerPerson);
 });
 
 app.post('/login', emailValidate, (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    res.status(400).json({ token: 'Os campos precisam ser preenchidos!' });
+  try {
+    return res.status(200).json({ token: generateToken() });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-  res.status(200).json({ token: generateToken() });
 });
 
 app.post('/talker', authValidate, nameValidate, ageValidate,
- talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
-  const newTalker = req.body;
-  const datapost = await fs.readFile(talkerJsonPath, 'utf-8');
-  const talkersJson = JSON.parse(datapost);
-  const newId = talkersJson.length + 1;
-  // const newTalkerArray = { id: newId, ...newTalker };
-  newTalker.id = newId;
-  // console.log(talkersJson);
-  // talkersJson.push(newTalker);
-  const newTalkerArray = [...talkersJson, newTalker];
-  const newTalkerJson = JSON.stringify(newTalkerArray);
-  fs.writeFile('src/talker.json', newTalkerJson);
-  res.status(201).json(newTalker);
- });
+  talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
+    try {
+      const newTalker = req.body;
+      const datapost = await fs.readFile(talkerJsonPath, 'utf-8');
+      const talkersJson = JSON.parse(datapost);
+      const newId = talkersJson.length + 1; // aqui cria o id de forma dinâmica
+      newTalker.id = newId;
+      talkersJson.push(newTalker);
+      // const newTalkerArray = [...talkersJson, newTalker]; pode fazer assim também
+      const newTalkersJson = JSON.stringify(talkersJson);
+      fs.writeFile('src/talker.json', newTalkersJson);
+      return res.status(201).json(newTalker);
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  });
 
- app.put('/talker/:id', authValidate, nameValidate, ageValidate,
- talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
-  const { id } = req.params;
-  const talkerUpDate = req.body;
-  const dataput = await fs.readFile(talkerJsonPath, 'utf-8');
-  const talkersJson = JSON.parse(dataput);
-  const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
-  talkerUpDate.id = Number(id);
-  const newTalkerArray = [...talkeresFound, talkerUpDate];
-  const newTalkerJson = JSON.stringify(newTalkerArray);
-  fs.writeFile('src/talker.json', newTalkerJson);
-  res.status(200).json(talkerUpDate);
- });
+app.put('/talker/:id', authValidate, nameValidate, ageValidate,
+  talkValidate, watchedAtValidate, rateValidate, async (req, res) => {
+    const { id } = req.params;
+    const talkerUpDate = req.body;
+    const dataput = await fs.readFile(talkerJsonPath, 'utf-8');
+    const talkersJson = JSON.parse(dataput);
+    const talkeresFound = talkersJson.filter((talker) => talker.id !== Number(id));
+    talkerUpDate.id = Number(id);
+    const newTalkerArray = [...talkeresFound, talkerUpDate];
+    // console.log(talkeresFound);
+    const newTalkerJson = JSON.stringify(newTalkerArray);
+    // console.log(newTalkerJson);
+    fs.writeFile('src/talker.json', newTalkerJson);
+    res.status(200).json(talkerUpDate);
+  });
 
- app.delete('/talker/:id', authValidate, async (req, res) => {
+app.delete('/talker/:id', authValidate, async (req, res) => {
   const { id } = req.params;
   const datadelete = await fs.readFile(talkerJsonPath, 'utf-8');
   const talkersJson = JSON.parse(datadelete);
@@ -100,8 +128,8 @@ app.post('/talker', authValidate, nameValidate, ageValidate,
   // const newTalkerArray = [...talkeresFound];
   const newTalkerJson = JSON.stringify(talkeresFound);
   fs.writeFile('src/talker.json', newTalkerJson);
-  res.status(204).json();
- });
+  return res.status(204).json();
+});
 
 app.listen(PORT, () => {
   console.log('Online');
@@ -109,19 +137,19 @@ app.listen(PORT, () => {
 
 /*
 Requisito 1
-- Crie um endpoint do tipo GET com a rota /talker, que possa listar todas as atividades do array. Ele será assíncrono, portanto: async
-- Leremos os dados no arquivo talker.json
+- Crie um endpoint do tipo GET com a rota /talker, que possa listar o array. Ele será assíncrono, portanto: async
+- Leremos os dados do arquivo talker.json. Para isso, usaremos o método fs.promise.readFile que aceita 2 parâmetros: 1 - o caminho do arquivo que será lido e 2 - o codificador dos dados, ou seja, qual codificador que vamos ler aquilo.
 - Converteremos para json
 - Responderemos com um status ok (200) com o mesmo json lido anteriormente
 */
 
 /*
 Requisito 2
-- Usaremos o método get vindo do arquivo app com a rota /talker/:id e em seguido o middleware assíncrono.
+- Usaremos o método get vindo do app com a rota /talker/:id e em seguida o middleware assíncrono.
 - Precisaremos de alguns dados para trabalhar, tais como: 1- o arquivo lido e convertido, 2- e o id que vem lá na URL, como um parâmetro de rota. Com isso podemo procurar dentres os objetos que estão no arquivo lido, aquele que tem o mesmo id passado na URL.
     - 1 - Para termos o arquivo lido, vamos fazer o mesmo processo anterior:
     - Ler o arquivo com o fs.readFile
-    - Converte-o para objeto.
+    - Convertê-lo para objeto.
     - 2 - Pegaremos o id da url pela desestruturação: { id } = req.params;
 - Já temos o array de objetos e o id, agora só encontrar o objeto que tenha o mesmo id passado na url. Usaremos o find
 - Se nenhum objeto for encontrado, responderemos com um status not found
@@ -145,7 +173,7 @@ Vamos cadastrar um talker através do método post e rota /talker
 2 - Pegaremos as informações no corpo da requisição ( e vamos adicionar no array que temos)
 3 - Pego o arquivo para ler assincronamente, converto para objeto.
 4 - Crio um id dinâmico para evitar erros
-5 - Incluo esse abjeto da requisição na minha lista de objetos (tentei dar um push, mas não foi)
+5 - Incluo esse abjeto da requisição na minha lista de objetos.
 6 - Passa tudo para json e escreve tudão no arquivo.
 7 - Depois disso tudo, vamos avisar ao cliente que deu bom kkk depois de tanto trabalho, há de dar bom
 */
@@ -155,8 +183,8 @@ Requisito 6
 - Faz todas as validações que já foram vistas no requisito 5
 - Vamos pegar o id pelo parâmetro e as novas informações no corpo da requisição
 - Ler e converter o arquivo para um array de objetos
-- Vamos fazer um filtro, onde retiraremos o objeto que te o mesmo id passado no parâmetro
-- Colocaremos o mesmo id, preservando
+- Vamos fazer um filtro, onde retiraremos o objeto que tem o mesmo id passado no parâmetro
+- Colocaremos o mesmo id no objeto que passamos no corpo da rquisição.
 - Vamos adicionar o objeto passado no corpo da requsição com os outros que foram filtrados
 - Depois é só desconverter o arquivo
 - Por fim vamos escrever isso tudo no arquivo json e responder que deu certo.
@@ -169,4 +197,14 @@ O raciocínio é o mesmo do requisito anterior
 - Faz um filtro retirando o objeto que tem o mesmo id passado no parâmetro de rota
 - Pega esse filtro, converte para json e escreve no arquivo
 - Avisa que deu bom e o objeto foi deletado.
+*/
+
+/*
+Requisito 8
+1 - Vamos colocar lá aquele middleware para fazer as autenticação do token
+2 - Depois vamos pegar o termo pesquisado, para isso, vamos fazer a destruturação até o 'q' que será onde colocaremos a query (ou seja, o que estamos buscando)
+3 - Vamos ler tudo e depois converter para json
+4 - Se não tiver nada pesquisado ou for vazio, vamos retornar tudo que foi convertido anteiormente.
+5 - Como vamos colocar uma parte do nome, precisamos saber se essa parte está inclusa em cada um dos nomes dos palestrantes. Aqueles que tiverem incluso o nome pesquisado, só trazer.
+6 - Se for achado ninguém, traz um array vazio, caso contrário, traz a pessoa amada.
 */
