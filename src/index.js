@@ -128,7 +128,7 @@ app.delete('/talker/:id', authValidate, async (req, res) => {
   // const newTalkerArray = [...talkeresFound];
   const newTalkerJson = JSON.stringify(talkeresFound);
   fs.writeFile('src/talker.json', newTalkerJson);
-  return res.status(204).json();
+  return res.status(204).send();
 });
 
 app.listen(PORT, () => {
