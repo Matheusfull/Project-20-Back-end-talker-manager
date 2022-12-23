@@ -3,8 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 /* const fs = require('fs').promises;
 const crypto = require('crypto'); */
-const talkerRouter = require('./routes/talkerRouter');
-const talkerLoginRouter = require('./routes/talkerLoginRouter');
+const routers = require('./routes');
 /* const emailValidate = require('./middleware/emailValidate');
 const authValidate = require('./middleware/authValidate');
 const nameValidate = require('./middleware/nameValidate');
@@ -29,8 +28,7 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.use('/talker', talkerRouter);
-app.use('/login', talkerLoginRouter);
+app.use(routers);
 
 /* const talkerJsonPath = 'src/talker.json';
 // const leitor = fs.readFile(talkerJsonPath, 'utf-8');
