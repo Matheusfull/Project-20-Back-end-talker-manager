@@ -1,19 +1,21 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs').promises;
-const crypto = require('crypto');
-const emailValidate = require('./middleware/emailValidate');
+/* const fs = require('fs').promises;
+const crypto = require('crypto'); */
+const talkerRouter = require('./routes/talkerRouter');
+const talkerLoginRouter = require('./routes/talkerLoginRouter');
+/* const emailValidate = require('./middleware/emailValidate');
 const authValidate = require('./middleware/authValidate');
 const nameValidate = require('./middleware/nameValidate');
 const ageValidate = require('./middleware/ageValidate');
 const talkValidate = require('./middleware/talkValidate');
 const watchedAtValidate = require('./middleware/watchedAtValidate');
-const rateValidate = require('./middleware/rateValidate');
+const rateValidate = require('./middleware/rateValidate'); */
 
-function generateToken() {
+/* function generateToken() {
   return crypto.randomBytes(8).toString('hex');
-}
+} */
 
 const app = express();
 app.use(bodyParser.json());
@@ -27,7 +29,10 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-const talkerJsonPath = 'src/talker.json';
+app.use('/talker', talkerRouter);
+app.use('/login', talkerLoginRouter);
+
+/* const talkerJsonPath = 'src/talker.json';
 // const leitor = fs.readFile(talkerJsonPath, 'utf-8');
 
 app.get('/talker/search', authValidate, async (req, res) => {
@@ -44,13 +49,13 @@ app.get('/talker/search', authValidate, async (req, res) => {
 
 app.get('/talker', async (_req, res) => {
   // const dataPath = path.resolve(__dirname, 'talker.json');
-  /* const data = await fs.readFile(talkerJsonPath, 'utf-8');
-  const talkersJson = JSON.parse(data);
-  res.status(200).json(talkersJson); */
-  /* if (!talkers) {
-    return res.status(200).send([]);
-  }
-  return res.status(200).json(talkers); */
+  // const data = await fs.readFile(talkerJsonPath, 'utf-8');
+  // const talkersJson = JSON.parse(data);
+  // res.status(200).json(talkersJson);
+  // if (!talkers) {
+  // return res.status(200).send([]);
+  // }
+  // return res.status(200).json(talkers); 
   try {
     const data = await fs.readFile(talkerJsonPath, 'utf-8');
     const talkersJson = JSON.parse(data);
@@ -129,7 +134,7 @@ app.delete('/talker/:id', authValidate, async (req, res) => {
   const newTalkerJson = JSON.stringify(talkeresFound);
   fs.writeFile('src/talker.json', newTalkerJson);
   return res.status(204).send();
-});
+}); */
 
 app.listen(PORT, () => {
   console.log('Online');
