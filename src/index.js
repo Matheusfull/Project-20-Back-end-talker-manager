@@ -14,7 +14,8 @@ const rateValidate = require('./middleware/rateValidate'); */
 
 /* function generateToken() {
   return crypto.randomBytes(8).toString('hex');
-} */
+} 
+*/
 
 const app = express();
 app.use(bodyParser.json());
