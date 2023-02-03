@@ -80,7 +80,7 @@
 
   - `npm install`.
 
-  3. Testando os Comandos :
+  3. Testando a aplicação :
 
   - `As rotas já foram implmentadas, agora só testar o CRUD e se divertir.`.
 
